@@ -32,7 +32,8 @@ public class Main {
                 sum+=bucketSizes.get(i);
                 max = max(max, bucketSizes.get(i));
             }
-            //System.out.println("Bucket " + i + ": " + bucketSizes.get(i));
+
+            System.out.println("Bucket " + i + ": " + bucketSizes.get(i));
         }
         for(int i = 0; i < bucketSizes.size(); i++){
             aboveAvg += (bucketSizes.get(i) > (sum/usedBuckets)?1:0);
@@ -71,7 +72,7 @@ public class Main {
     }
 
     public static void main(String[] args){
-        //testMyHashTable();
+        testMyHashTable();
         testBST();
     }
 }
