@@ -62,11 +62,9 @@ public class Main {
     }
 
     private static void testBST(){
-        ArrayList<Integer> arr = new ArrayList<>();
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < 10; i++){
-            arr.add(rnd.nextInt());
-            tree.put(arr.getLast(), i);
+            tree.put(rnd.nextInt(), i);
         }
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
