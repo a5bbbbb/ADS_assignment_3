@@ -1,6 +1,7 @@
 import datastructures.BST;
 import datastructures.MyHashTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -8,16 +9,26 @@ import static java.lang.Math.max;
 
 public class Main {
 
+    private static final Random rnd = new Random();
+    private static final int sampleSize = 10000;
+
+    public static String getRandomString(int length) {
+        String dict = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder builder = new StringBuilder();
+        while (builder.length() < length) { // length of the random string.
+            int index = rnd.nextInt(0,dict.length()-1);
+            builder.append(dict.charAt(index));
+        }
+        return builder.toString();
+    }
+
     public static void testMyHashTable(){
         MyHashTable<MyTestingClass, Integer> table = new MyHashTable<>();
 
         long startTime = System.currentTimeMillis();
 
-        int sampleSize = 10000;
-        Random rng = new Random();
-
         for (int i = 0; i < sampleSize; i++){
-            table.put(new MyTestingClass(String.valueOf(rng.nextInt())), i);
+            table.put(new MyTestingClass(getRandomString(20)), i);
         }
 
         long stopTime = System.currentTimeMillis();
@@ -32,7 +43,6 @@ public class Main {
                 sum+=bucketSizes.get(i);
                 max = max(max, bucketSizes.get(i));
             }
-
             System.out.println("Bucket " + i + ": " + bucketSizes.get(i));
         }
         for(int i = 0; i < bucketSizes.size(); i++){
@@ -47,14 +57,14 @@ public class Main {
 
     public static void testBST(){
         BST<Integer, Integer> tree = new BST<>();
-        Random rng = new Random();
+
+        ArrayList<Integer> arr = new ArrayList<>();
 
         long startTime = System.currentTimeMillis();
 
-        int sampleSize = 10000;
-
-        for (int i = 0; i < sampleSize; i++){
-            tree.put(rng.nextInt(), i);
+        for (int i = 0; i < 10; i++){
+            arr.add(rnd.nextInt());
+            tree.put(arr.getLast(), i);
         }
 
         long stopTime = System.currentTimeMillis();
@@ -73,6 +83,7 @@ public class Main {
 
     public static void main(String[] args){
         testMyHashTable();
+        System.out.println("\n------------------------------------------------\n");
         testBST();
     }
 }
