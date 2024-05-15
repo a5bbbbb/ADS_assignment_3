@@ -3,7 +3,6 @@ package datastructures;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-import static java.lang.Math.abs;
 
 public class MyHashTable <K, V>{
 
@@ -89,6 +88,30 @@ public class MyHashTable <K, V>{
         checkNull(key);
         return (key.hashCode()%M + M)%M;
     }
+    /*
+     * Helper method. Returns the closest larger prime number to provided one.
+     * Uses sequential search through numbers larger than the argument.
+     * Test each with divisors from 2 to less or equal to sqrt(tested number).
+     *
+     * Time complexity: (N * sqrt(A)), where N is an amount of numbers tested,
+     * and A is the largest number tested.
+     *
+     * @param cur the number before the one from which the search starts.
+     * @return the closest larger prime to the provided number.
+     */
+    private int getClosestLargerPrime(int cur){
+        for(int i = cur+1;;i++){
+            boolean good = true;
+            for(int j = 2; j*j <= i; j++){
+                if(i%j == 0){
+                    good = false;
+                    break;
+                }
+            }
+            if(good)
+                return i;
+        }
+    }
 
     /*
     * Doubles number of buckets when the load of the table exceeds the load factor.
@@ -96,12 +119,12 @@ public class MyHashTable <K, V>{
     * Time complexity: O(N), where N is the number of pairs inserted.
      */
     private void resize(){
-        M *= 2;
+        M = getClosestLargerPrime(M*2);
         Object[] oldChainArray = chainArray;
         initializeChainArray();
         for(var t : oldChainArray){
             if(t == null)continue;
-            HashNode<K, V> node = (HashNode<K, V>)t;
+            HashNode<K, V> node = (HashNode<K, V>) t;
             while(node != null){
                 // Put every key-value pair from old chainArray to new one.
                 put(node.key, node.value);
@@ -274,7 +297,7 @@ public class MyHashTable <K, V>{
      */
     public K getKey(V value){
         for(var t : chainArray){
-            HashNode<K, V> node = (HashNode<K, V>)t;
+            HashNode<K, V> node = (HashNode<K, V>) t;
             while(node != null){
                 if(node.value == value)return node.key;
                 node = node.next;
@@ -294,7 +317,7 @@ public class MyHashTable <K, V>{
     public ArrayList<Integer> getBucketSizes(){
         ArrayList<Integer> bucketSizes = new ArrayList<>();
         for(var t : chainArray) {
-            HashNode<K, V> node = (HashNode<K, V>)t;
+            HashNode<K, V> node = (HashNode<K, V>) t;
             if (node == null) {
                 bucketSizes.add(0);
             } else {
