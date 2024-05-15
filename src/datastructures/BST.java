@@ -37,26 +37,6 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
         }
     }
 
-    public class MyIterator implements Iterator<KeyValuePair> {
-        private final List<KeyValuePair> arr;
-        private int cur = 0;
-
-        public MyIterator(List<KeyValuePair> arr) {
-            this.arr = arr;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return cur < arr.size();
-        }
-
-        public KeyValuePair next(){
-            if(hasNext())
-                return arr.get(cur++);
-            throw new IndexOutOfBoundsException();
-        }
-    }
-
     /*
      * Helper method. Puts a node in the tree.
      * If the current node's key is greater than key of key-value pair,
@@ -140,7 +120,7 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
     }
 
     /*
-     * Finds value with key=key in the tree.
+     * Returns the value of the key.
      * Calls helper method private V findValue(Node node, K key).
      *
      * Time complexity: 0(N) where N is the size of the tree.
@@ -158,7 +138,7 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
      *
      * Time complexity: 0(N) where N is the size of the tree.
      *
-     * @param the current node.
+     * @param node the current node.
      * @return node with no left child.
      */
     private Node findNodeWithNoLeftChild(Node node){
@@ -168,6 +148,12 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
     /*
      * Helper method. Deletes the node with the key=key.
      * If the current node is null, then throw NoSuchElementException.
+     * If the current node's key is not equal to the key,
+     * and the key is less than the current node's key,
+     * then recursively go to left subtree.
+     * If the current node's key is not equal to the key,
+     * and the key is greater than the current node's key,
+     * then recursively go to right subtree.
      * If the current node's key is equal to the key.
      * Case 1: none or one child.
      * Substitute the current node with its only child.
@@ -180,26 +166,30 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
      *
      * Time complexity: 0(N) where N is the size of the tree.
      *
-     * @param the current node.
-     * @param the parent node.
-     * @param the key.
+     * @param node the current node.
+     * @param parent the parent node.
+     * @param key the key.
      * @return post order reference to child of the parent node.
      */
     private Node deleteNode(Node node, Node parent, K key){
         if(node == null)
             throw new NoSuchElementException("No value with key = " + key + "was found.");
         if(node.key == key) {
+            Node returnNode;
             if(node.left == null){
-                return node.right;
+                returnNode = node.right;
             }
             else if(node.right == null){
-                return node.left;
+                returnNode = node.left;
             }
             else{
                 Node newParent = findNodeWithNoLeftChild(node.right);
                 newParent.left = node.left;
-                return node.right;
+                returnNode = node.right;
             }
+            if(parent == null)
+                root = returnNode;
+            return returnNode;
         }
         else if(node.key.compareTo(key) > 0)
             node.left = deleteNode(node.left, node, key);
@@ -209,7 +199,7 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
     }
 
     /*
-     * Helper method. Deletes the node with the key=key.
+     * Deletes the key-value pair.
      * If the current node is null, then throw NoSuchElementException.
      * If the current node's key is equal to the key.
      * Case 1: none or one child.
@@ -223,7 +213,7 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
      *
      * Time complexity: 0(N) where N is the size of the tree.
      *
-     * @param the key.
+     * @param key the key.
      */
     public void delete(K key){
         deleteNode(root, null, key);
@@ -269,7 +259,7 @@ public class BST <K extends Comparable<K>, V> implements Iterable<BST<K, V>.KeyV
      */
     @Override
     public Iterator<BST<K, V>.KeyValuePair> iterator() {
-        return new MyIterator(getKeyValuePairs());
+        return getKeyValuePairs().iterator();
     }
 
     public int size() {
