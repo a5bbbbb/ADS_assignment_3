@@ -4,18 +4,24 @@ public class MyTestingClass {
     private int hash = 0;
 
     /*
-     * Calculates hash combining two with different base values.
+     * Calculates hash combining two hashes with different base values and modules.
      */
     private void calcHash(){
-        long pw = 11, pw2 = 23;
+        long m = (int)1e9 + 9, m2 = 998244353;
+        long pw = 41, pw2 = 53;
         long hash = 0, hash2 = 0;
         for(int i = 0; i < s.length(); i++){
-            hash = ((hash*pw) + (s.charAt(i)));
-            hash2 = ((hash2*pw2) + (s.charAt(i)));
+            hash = ((hash*pw)%m + (s.charAt(i)))%m;
+            hash2 = ((hash2*pw2)%m2 + (s.charAt(i)))%m2;
         }
-        this.hash = (int) (hash2) + (int) (hash2-hash);
+        this.hash = ((int) (hash)
+                + (int) (hash2));
     }
-
+    /*
+     * Constructor stores the string,
+     * and calls hashing method,
+     * so that the hash calculated only once.
+     */
     public MyTestingClass(String s) {
         this.s = s;
         calcHash();
