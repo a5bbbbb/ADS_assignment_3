@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 public class MyHashTable <K, V>{
 
     private class HashNode<K, V>{
-        private K key;
+        private final K key;
         private V value;
         private HashNode<K, V> next;
 
@@ -38,12 +38,12 @@ public class MyHashTable <K, V>{
             return "{" + key + " " + value + "}";
         }
     }
-    private Object[] chainArray;
+    private HashNode<K,V>[] chainArray;
     private int M = 11;
     private int size = 0;
 
     private void initializeChainArray(){
-        chainArray = new Object[M];
+        chainArray = (HashNode<K,V>[]) new HashNode[M];
     }
 
     /*
@@ -120,11 +120,10 @@ public class MyHashTable <K, V>{
      */
     private void resize(){
         M = getClosestLargerPrime(M*2);
-        Object[] oldChainArray = chainArray;
+        HashNode<K,V>[] oldChainArray = chainArray;
         initializeChainArray();
-        for(var t : oldChainArray){
-            if(t == null)continue;
-            HashNode<K, V> node = (HashNode<K, V>) t;
+        for(var node : oldChainArray){
+            if(node == null)continue;
             while(node != null){
                 // Put every key-value pair from old chainArray to new one.
                 put(node.key, node.value);
@@ -159,7 +158,7 @@ public class MyHashTable <K, V>{
             // If node with key=key does not exist, then put new node to the head of the chain.
             int index = hash(key);
             HashNode<K, V> newNode = new HashNode<>(key, value);
-            newNode.next = (HashNode<K, V>) chainArray[index];
+            newNode.next = chainArray[index];
             chainArray[index] = newNode;
             size++;
             // Resize the table if the load exceeds the load factor.
@@ -182,7 +181,7 @@ public class MyHashTable <K, V>{
      */
     private HashNode<K, V> getNodeByKey(K key){
         checkNull(key);
-        HashNode<K, V> node = (HashNode<K, V>) chainArray[hash(key)];
+        HashNode<K, V> node = chainArray[hash(key)];
         while(node != null && !node.key.equals(key))
             node = node.next;
         if(node == null) {
@@ -223,7 +222,7 @@ public class MyHashTable <K, V>{
      */
     private HashNode<K, V> getPrevNodeByKey(K key){
         checkNull(key);
-        HashNode<K, V> node = (HashNode<K, V>) chainArray[hash(key)], prev = null;
+        HashNode<K, V> node = chainArray[hash(key)], prev = null;
         while(node != null && !node.key.equals(key)) {
             prev = node;
             node = node.next;
@@ -252,7 +251,7 @@ public class MyHashTable <K, V>{
         V value;
         // If the previous node is null, then the node to be removed is the head of the bucket.
         if (prevNode == null) {
-            value = ((HashNode<K, V>) chainArray[index]).value;
+            value = chainArray[index].value;
             chainArray[index] = null;
         }
         // Otherwise, the next node of the previous node is the next of the node to be removed.
@@ -296,10 +295,9 @@ public class MyHashTable <K, V>{
      * @throws NoSuchElementException if no key with value=value was found.
      */
     public K getKey(V value){
-        for(var t : chainArray){
-            HashNode<K, V> node = (HashNode<K, V>) t;
+        for(var node : chainArray){
             while(node != null){
-                if(node.value == value)return node.key;
+                if(node.value.equals(value))return node.key;
                 node = node.next;
             }
         }
@@ -316,8 +314,7 @@ public class MyHashTable <K, V>{
      */
     public ArrayList<Integer> getBucketSizes(){
         ArrayList<Integer> bucketSizes = new ArrayList<>();
-        for(var t : chainArray) {
-            HashNode<K, V> node = (HashNode<K, V>) t;
+        for(var node : chainArray) {
             if (node == null) {
                 bucketSizes.add(0);
             } else {
