@@ -43,7 +43,8 @@ The main method of the Main class calls testMyHashTable() and testBST().
 
 
 ## HashTable
-The hash table implementation uses chaining method for collision resolution, which grants average time complexity of 1, with the worst case being O(N).
+The hash table implementation uses separate chaining method for collision resolution, which grants amortized time complexity of 1, with the worst case being O(N).
+Sedgewick, R., & Wayne, K. (2011). Algorithms. Addison-wesley professional.
 ### Methods
 #### public MyHashTable()
 Constructor with default number of buckets.
@@ -72,9 +73,10 @@ Finds the key with the value.
 Returns sizes of buckets of the table.
 
 ## BinarySearchTree
-The binary search tree is a tree, in which every vertex has a key and a value.<br>
-Every vertex follows a rule that left subtree must contain keys that are less than the key,
-and that right subtree must contain keys that are greater than the key.
+The binary search tree is a binary tree where every vertex has a key and a value.<br>
+Every vertex satisfies the restriction that the left subtree must contain keys that are less than the key,
+and that the right subtree must contain keys that are greater than the key.<br>
+Sedgewick, R., & Wayne, K. (2011). Algorithms. Addison-wesley professional.
 
 ### Methods
 #### void put(K key, V value)
